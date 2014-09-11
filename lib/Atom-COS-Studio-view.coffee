@@ -29,11 +29,13 @@ class AtomCOSStudioView extends View
     @handleEvents() # events
     @treeView =new TreeView()
     atom.workspace.registerOpener (uriToOpen) ->
+
       #console.log path.extname(uriToOpen)
       if 'Atom-COS-Studio://terminal-view'==uriToOpen
         return new TerminalView()
       {protocol, host, pathname} = url.parse(uriToOpen)
-      if 'Atom-COS-Studio-documatic:'==protocol
+
+      if 'atom-cos-studio-documatic:'==protocol
         return new DocumaticView(uriToOpen)
     @toolbarView=new ToolbarView()
   serialize: ->
@@ -115,7 +117,7 @@ class AtomCOSStudioView extends View
     ###
     BrowserWindow = require('remote').require 'browser-window'
     mainWindow = new BrowserWindow({width: 800, height: 600, frame: true, 'skip-taskbar':true, 'auto-hide-menu-bar':true });
-    mainWindow.loadUrl('http://localhost:57772/csp/sys/webterminal/index.csp')
+    mainWindow.loadUrl('http://localhost:57773/csp/sys/webterminal/index.csp')
     mainWindow.show()
   output: ->
     if @outputView instanceof OutputView
@@ -136,9 +138,8 @@ class AtomCOSStudioView extends View
     editor=atom.workspace.getActiveEditor()
     if editor!=null
       text= editor.getSelection().getText()
-      ns= @getProperties().namespace
       uri="Atom-COS-Studio-documatic://"+
-      "http://localhost:57772/csp/documatic/%25CSP.Documatic.cls?LIBRARY=#{ns}&CLASSNAME=#{text}"
+      "http://localhost:57773/csp/documatic/%25CSP.Documatic.cls?LIBRARY=#{@NameSpace}&CLASSNAME=#{text}"
       atom.workspace.open(uri, split: 'left', searchAllPanes: false).done (documaticView) ->
         #if documaticView instanceof DocumaticView
           #documaticView.show(@getProperties().namespace,editor.getSelection().getText())
