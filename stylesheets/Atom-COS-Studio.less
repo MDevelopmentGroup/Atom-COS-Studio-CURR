@@ -1,0 +1,52 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/stylesheets/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+@import "../bundle/components/fontawesome/less/font-awesome.less";
+@fa-font-path: "atom://Atom-COS-Studio/bundle/components/fontawesome/fonts";
+@font-face {
+  font-family: 'Font Awesome';
+  font-weight: normal;
+  font-style: normal;
+  src: url('@{fa-font-path}/fontawesome-webfont.woff') format('woff');
+}
+.fa {
+  font-family: 'Font Awesome';
+}
+.li-inline {
+  display:inline;
+  margin: 5px;
+}
+.Description {
+  height:50px
+}
+
+.Atom-COS-Studio {
+}
+.cache-panel {
+  margin-bottom: 0px
+
+}
+.cache-panel-heading {
+  padding: 10px 10px 3px 10px!important;
+}
+
+.output-view {
+  overflow-y: scroll;
+
+  .stacktrace {
+  }
+
+  pre {
+    height: 200px;
+    font-size: 12px;
+
+    .stderr {
+      color: red;
+    }
+    .stdout {
+      color: #49FF3C;
+    }
+  }
+}

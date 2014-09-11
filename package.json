@@ -1,0 +1,14 @@
+{
+  "name": "Atom-COS-Studio",
+  "main": "./lib/Atom-COS-Studio",
+  "version": "0.1.1",
+  "description": "A short description of your package",
+  "activationEvents": [ "Atom-COS-Studio:namespace", "Atom-COS-Studio:config"],
+  "repository": "https://github.com/atom/",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}
