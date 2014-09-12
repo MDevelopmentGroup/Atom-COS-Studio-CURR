@@ -26,6 +26,8 @@ class AtomCOSStudioView extends View
     @div ''
   initialize: (serializeState) ->
     @studioAPI=new StudioAPI(atom.config.get('Atom-COS-Studio.UrlToConnect'))
+    atom.config.observe 'Atom-COS-Studio.UrlToConnect', =>
+      @studioAPI.setURL(atom.config.get('Atom-COS-Studio.UrlToConnect'))
     @handleEvents() # events
     @treeView =new TreeView()
     atom.workspace.registerOpener (uriToOpen) ->

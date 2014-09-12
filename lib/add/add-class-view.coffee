@@ -51,9 +51,9 @@ class AddClassView extends View
     ClassName=@ClassName.getEditor().getText()
     Description=@Description.getEditor().getText()
     Extends=@Extends.getEditor().getText()
-    @studioAPI.createclass {namespace:@NameSpace,nameClass:"#{PackageName}.#{ClassName}",Super:Extends,Description:Description}, (status) =>
+    @studioAPI.createclass {namespace:@NameSpace,nameClass:"#{PackageName}.#{ClassName}",Super:Extends,Description:Description,Path:atom.config.get('Atom-COS-Studio.TempDir')}, (status) =>
       if status=='1'
-        uri=@Data.TempDir+'/Classes/'+PackageName.replace('.','/')+'/'+ClassName+'.cls'
+        uri=atom.config.get('Atom-COS-Studio.TempDir')+"/#{@NameSpace}/"+'/Classes/'+PackageName.replace('.','/')+'/'+ClassName+'.cls'
         atom.workspace.open(uri, split: 'left', searchAllPanes: true)
         @destroy()
       else
