@@ -3,7 +3,7 @@ remote = require 'remote'
 StudioAPI= require 'StudioAPI'
 module.exports =
   configDefaults:
-    UrlToConnect:'http://localhost:57772/mdg-dev/'
+    UrlToConnect:'http://localhost:57772/'
     TempDir:'/home/victor/temp/'
   AtomCOSStudioView: null
   activate: (state) ->
