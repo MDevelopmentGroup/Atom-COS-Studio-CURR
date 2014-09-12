@@ -1,0 +1,6 @@
+{
+  "name": "testplg",
+  "main": "./lib/testplg",
+  "version": "0.0.1",
+  "description": "A short description of your package"
+}

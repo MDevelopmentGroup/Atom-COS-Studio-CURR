@@ -5,7 +5,7 @@ class ToolbarView extends View
   @content: ->
     @div class:'panel cache-panel', =>
       @div class:'panel-heading cache-panel-heading', =>
-        @div class: 'block', =>
+        @div class: 'block', outlet:'ButtonList', =>
           @button  outlet:'Config', class:'inline-block btn', =>
             @li class:'fa fa-cogs fa-lg'
           @button  outlet:'NameSpace', class:'inline-block btn', =>
@@ -27,7 +27,8 @@ class ToolbarView extends View
     @bind()
     @tooltip()
   serialize: ->
-
+  add: (el) ->
+    @ButtonList.append(el+'Button')
   close: ->
     if @hasParent()
       @detach()

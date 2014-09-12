@@ -2,6 +2,7 @@
 url = require 'url'
 path=require 'path'
 fs= require 'fsplus' # JSON fsplus
+fsp= require 'fs-plus'
 StudioAPI= require 'StudioAPI'
 SelectNameSpaceView=require './view/select-namespace-view'
 Tree=require './tree-view/tree'
@@ -13,6 +14,7 @@ ConfigView=require './view/config-view'
 ToolbarView=require './view/toolbar-view'
 AddDialogView=require './add/add-dialog-view'
 AddClassView=require './add/add-class-view'
+
 module.exports =
 class AtomCOSStudioView extends View
   @studioAPI:null
@@ -25,6 +27,14 @@ class AtomCOSStudioView extends View
   @content: ->
     @div ''
   initialize: (serializeState) ->
+    #console.log fsp
+    #Dirs=fsp.readdirSync("/home/victor/.atom/packages/Atom-COS-Studio/lib/plugins/",{})
+    #Dirs=fsp.readdirSync(atom.packages.resolvePackagePath('Atom-COS-Studio')+"/lib/plugins/",{})
+    #console.log Dirs
+    #data= fs.readJSON "/home/victor/.atom/packages/Atom-COS-Studio/lib/plugins/#{Dirs[0]}/package.json"
+    #t=require "./plugins/#{Dirs[0]}/#{data.main.substr(2,data.main.length)}"
+    #console.log new t(",kf")
+
     @studioAPI=new StudioAPI(atom.config.get('Atom-COS-Studio.UrlToConnect'))
     atom.config.observe 'Atom-COS-Studio.UrlToConnect', =>
       @studioAPI.setURL(atom.config.get('Atom-COS-Studio.UrlToConnect'))
@@ -40,6 +50,7 @@ class AtomCOSStudioView extends View
       if 'atom-cos-studio-documatic:'==protocol
         return new DocumaticView(uriToOpen)
     @toolbarView=new ToolbarView()
+    @loadPlugins(@toolbarView)
   serialize: ->
   destroy: ->
     @detach()
@@ -48,6 +59,16 @@ class AtomCOSStudioView extends View
       @detach()
     else
       atom.workspaceView.append(this)
+  loadPlugins:(state) ->
+    PluginsTemp={}
+    PluginsDir=atom.packages.resolvePackagePath('Atom-COS-Studio')+"/lib/plugins/"
+    Plugins=fsp.readdirSync(PluginsDir,{})
+    for plugin in Plugins
+      pluginPackage= fs.readJSON PluginsDir+"/#{plugin}/package.json"
+      if pluginPackage.main!=''
+        PluginsTemp[plugin]=require "./plugins/#{plugin}/#{pluginPackage.main.substr(2,pluginPackage.main.length)}"
+        PluginsTemp[plugin]=new PluginsTemp[plugin](state)
+
   handleEvents: ->
     atom.workspaceView.command "Atom-COS-Studio:toggle", => @toggle()
     atom.workspaceView.command "Atom-COS-Studio:namespace", => @namespace()
