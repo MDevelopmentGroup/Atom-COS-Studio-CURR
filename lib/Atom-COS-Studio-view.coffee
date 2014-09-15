@@ -14,7 +14,7 @@ ConfigView=require './view/config-view'
 ToolbarView=require './view/toolbar-view'
 AddDialogView=require './add/add-dialog-view'
 AddClassView=require './add/add-class-view'
-
+StatusPanelView=require './status-panel/status-panel-view'
 module.exports =
 class AtomCOSStudioView extends View
   @studioAPI:null
@@ -27,14 +27,6 @@ class AtomCOSStudioView extends View
   @content: ->
     @div ''
   initialize: (serializeState) ->
-    #console.log fsp
-    #Dirs=fsp.readdirSync("/home/victor/.atom/packages/Atom-COS-Studio/lib/plugins/",{})
-    #Dirs=fsp.readdirSync(atom.packages.resolvePackagePath('Atom-COS-Studio')+"/lib/plugins/",{})
-    #console.log Dirs
-    #data= fs.readJSON "/home/victor/.atom/packages/Atom-COS-Studio/lib/plugins/#{Dirs[0]}/package.json"
-    #t=require "./plugins/#{Dirs[0]}/#{data.main.substr(2,data.main.length)}"
-    #console.log new t(",kf")
-
     @studioAPI=new StudioAPI(atom.config.get('Atom-COS-Studio.UrlToConnect'))
     atom.config.observe 'Atom-COS-Studio.UrlToConnect', =>
       @studioAPI.setURL(atom.config.get('Atom-COS-Studio.UrlToConnect'))
@@ -51,6 +43,7 @@ class AtomCOSStudioView extends View
         return new DocumaticView(uriToOpen)
     @toolbarView=new ToolbarView()
     @loadPlugins(@toolbarView)
+
   serialize: ->
   destroy: ->
     @detach()
@@ -60,14 +53,19 @@ class AtomCOSStudioView extends View
     else
       atom.workspaceView.append(this)
   loadPlugins:(state) ->
-    PluginsTemp={}
+    LoadedPlugins={}
     PluginsDir=atom.packages.resolvePackagePath('Atom-COS-Studio')+"/lib/plugins/"
     Plugins=fsp.readdirSync(PluginsDir,{})
-    for plugin in Plugins
-      pluginPackage= fs.readJSON PluginsDir+"/#{plugin}/package.json"
-      if pluginPackage.main!=''
-        PluginsTemp[plugin]=require "./plugins/#{plugin}/#{pluginPackage.main.substr(2,pluginPackage.main.length)}"
-        PluginsTemp[plugin]=new PluginsTemp[plugin](state)
+    for PluginName, index in Plugins
+      if fs.existsSync PluginsDir+"/#{PluginName}/package.json"
+        pluginPackage=fs.readJSON PluginsDir+"/#{PluginName}/package.json"
+        if atom.config.get("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin")==undefined
+          atom.config.set("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin",true)
+        if pluginPackage.main!='' and atom.config.get("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin")
+          tempPlg=require "./plugins/#{PluginName}#{pluginPackage.main}"
+          LoadedPlugins[PluginName]=new tempPlg(state,LoadedPlugins)
+        if index==Plugins.length-1
+          atom.workspaceView.trigger('Atom-COS-Studio:plugins-loaded-state')
 
   handleEvents: ->
     atom.workspaceView.command "Atom-COS-Studio:toggle", => @toggle()
@@ -85,6 +83,13 @@ class AtomCOSStudioView extends View
     atom.workspaceView.command "Atom-COS-Studio:add-dialog", => @adddialog()
     atom.workspaceView.command "Atom-COS-Studio:create-class-cache", => @CreateClassCache()
     atom.workspaceView.command "Atom-COS-Studio:tree-view-refresh", => @TreeViewRefresh()
+    atom.workspaceView.command "Atom-COS-Studio:test", => @Test()
+
+  Test: ->
+    statusPanelView=new StatusPanelView([{title:'OutPut', icon:'fa fa-sign-out'},
+    {title:'Terminal', icon:'fa fa-terminal'},
+    {title:'Search', icon:'fa fa-search'}
+    ])
   Output: ->
     if @outputView instanceof OutputView
       return @outputView
@@ -140,7 +145,7 @@ class AtomCOSStudioView extends View
     ###
     BrowserWindow = require('remote').require 'browser-window'
     mainWindow = new BrowserWindow({width: 800, height: 600, frame: true, 'skip-taskbar':true, 'auto-hide-menu-bar':true });
-    mainWindow.loadUrl('http://localhost:57773/csp/sys/webterminal/index.csp')
+    mainWindow.loadUrl(atom.config.get('Atom-COS-Studio.UrlToConnect')+'csp/sys/webterminal/index.csp')
     mainWindow.show()
   output: ->
     if @outputView instanceof OutputView
@@ -162,7 +167,7 @@ class AtomCOSStudioView extends View
     if editor!=null
       text= editor.getSelection().getText()
       uri="Atom-COS-Studio-documatic://"+
-      "http://localhost:57773/csp/documatic/%25CSP.Documatic.cls?LIBRARY=#{@NameSpace}&CLASSNAME=#{text}"
+      "#{atom.config.get('Atom-COS-Studio.UrlToConnect')}csp/documatic/%25CSP.Documatic.cls?LIBRARY=#{@NameSpace}&CLASSNAME=#{text}"
       atom.workspace.open(uri, split: 'left', searchAllPanes: false).done (documaticView) ->
         #if documaticView instanceof DocumaticView
           #documaticView.show(@getProperties().namespace,editor.getSelection().getText())

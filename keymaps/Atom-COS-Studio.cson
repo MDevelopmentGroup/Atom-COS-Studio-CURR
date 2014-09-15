@@ -13,3 +13,4 @@
   'ctrl-alt-0': 'Atom-COS-Studio:tree-view-refresh'
   'ctrl-alt-a':'window:save-all'
   'F8': 'Atom-COS-Studio:compile-all'
+  'F10': 'Atom-COS-Studio:test'

@@ -23,7 +23,8 @@
         { 'label': 'Compile All', 'command': 'Atom-COS-Studio:compile-all' },
         { 'label': 'Terminal', 'command': 'Atom-COS-Studio:terminal' },
         { 'label': 'Output', 'command': 'Atom-COS-Studio:output' },
-        { 'label': 'Refresh', 'command': 'Atom-COS-Studio:tree-view-refresh' }
+        { 'label': 'Refresh', 'command': 'Atom-COS-Studio:tree-view-refresh' },
+        { 'label': 'Test', 'command': 'Atom-COS-Studio:test' }
       ]
     ]
   }
