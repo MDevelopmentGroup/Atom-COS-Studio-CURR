@@ -60,7 +60,7 @@ class AtomCOSStudioView extends View
       if fs.existsSync PluginsDir+"/#{PluginName}/package.json"
         pluginPackage=fs.readJSON PluginsDir+"/#{PluginName}/package.json"
         if atom.config.get("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin")==undefined
-          atom.config.set("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin",true)
+          atom.config.set("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin",false)
         if pluginPackage.main!='' and atom.config.get("Atom-COS-Studio.Enable#{pluginPackage.name}Plugin")
           tempPlg=require "./plugins/#{PluginName}#{pluginPackage.main}"
           LoadedPlugins[PluginName]=new tempPlg(state,LoadedPlugins)
